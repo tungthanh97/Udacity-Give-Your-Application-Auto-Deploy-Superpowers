@@ -42,7 +42,7 @@ jobs:
               npm run build
             fi
       - save_cache:
-          paths: ~/project/frontend/node_modules
+          paths: [~/project/frontend/node_modules]
           key: frontend-build
 
   build-backend:
@@ -62,7 +62,7 @@ jobs:
               npm run build
             fi
       - save_cache:
-          paths: ~/project/backend/node_modules
+          paths: [~/project/backend/node_modules]
           key: backend-build
 
   test-frontend:
@@ -131,7 +131,7 @@ jobs:
             cd backend
             npm audit --audit-level=critical || (npm audit fix --audit-level=critical --force && npm audit fix --audit-level=critical --force && npm audit --audit-level=critical)
   deploy-infrastructure:
-   docker:
+    docker:
       # Docker image here that supports AWS CLI
       - image: amazon/aws-cli:latest
     steps:
