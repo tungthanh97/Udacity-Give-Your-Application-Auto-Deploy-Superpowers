@@ -146,7 +146,6 @@ jobs:
               yum update
               yum -y install tar gzip
       - run:
-      - run:
           name: Ensure back-end infrastructure exists
           command: |
             aws ec2 describe-instances 
