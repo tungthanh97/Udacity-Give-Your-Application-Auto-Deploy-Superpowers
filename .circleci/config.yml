@@ -194,7 +194,6 @@ jobs:
       - run: 
           name: install dependencies # gzip and tar
           command: |
-              yum update
               yum -y install tar gzip
       - run:
           name: Ensure back-end infrastructure exists
@@ -359,7 +358,7 @@ jobs:
             npm install
             npm run build
             echo $(ls)
-            tar -czf artifact.tar.gz dist/* package*
+            tar -czf artifact.tar.gz dist/* package* *.env
             cd ..
             cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
       - run:
