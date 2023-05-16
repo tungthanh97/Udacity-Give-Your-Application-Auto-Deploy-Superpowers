@@ -28,6 +28,25 @@ commands:
             rm ~/project/frontend/package-lock.json  
             rm ~/project/backend/package-lock.json 
 
+  revert-migrations:
+    description: Revert the last migration
+    parameters:
+      Workflow_ID:
+        type: string
+        default: ${CIRCLE_WORKFLOW_ID:0:7}
+    steps:
+      - run:
+          name: Revert migrations
+          when: on_fail
+          command: |
+            SUCCESS=$(curl --insecure  https://kvdb.io/VMXT5Pf9QKPRM7H1yLhric/migration_<< parameters.Workflow_ID >>)
+            # Logic for reverting the database state
+            if [[ "${SUCCESS}" == "1" ]]
+            then
+              cd ~/project/backend
+              npm install
+              npm run migration:revert
+            fi
 
 jobs:
   build-frontend:
@@ -217,6 +236,54 @@ jobs:
               pwd
               cat ~/project/backend/.env
         - destroy-environment
+  run-migrations:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: [backend-build]
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: awscli install
+          command: |
+            sudo apt-get -y -qq update
+            sudo apt-get -y -qq install python3
+            sudo apt-get -qq install awscli
+      - run:
+          name: Run migrations
+          command: |
+            cd backend 
+            npm install
+            npm run build
+            echo 'DUMP MIGRATIONS'
+            echo "PWD: " $(pwd)
+            echo "HOST: " $TYPEORM_HOST
+            npm run migrations >> ~/project/backend/migrations_dump.txt
+            echo 'DISPLAY CONTENTS'
+            echo '*****************'
+            cat migrations_dump.txt
+            echo '-----------------'
+      - run:
+          name: Send migration results to memstash
+          command: |
+            cd backend
+            pwd
+            sudo cat ~/project/backend/migrations_dump.txt #/root/project/circleci/project/backend/migrations_dump.txt
+            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+            then
+              curl -H "Content-Type: text/plain" -H "token: ce-${CIRCLE_WORKFLOW_ID}" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
+              echo migration_${CIRCLE_WORKFLOW_ID}
+              echo "SUCCESS = 1"
+            else
+              echo $(curl -H "Content-Type: text/plain" -H "token: ce-${CIRCLE_WORKFLOW_ID}" --request PUT --data "0" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID} | grep "No migrations")
+              echo "migration ID" migration_${CIRCLE_WORKFLOW_ID}
+              echo "FAIL = 0"
+            fi
+      - destroy-environment:
+            workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations
 
 workflows:
   default:
