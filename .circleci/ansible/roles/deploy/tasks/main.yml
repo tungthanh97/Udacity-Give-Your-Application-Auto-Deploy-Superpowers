@@ -4,6 +4,7 @@
     path: ~/backend-app
     state: directory
     mode: 0755
+    
 
 - name: "Install dependencies"
   become: true
@@ -41,12 +42,11 @@
 #     cd ~/backend-app/dist
 #     pm2 stop default
 #     pm2 start main.js
-
 #   register: execute_node
 
-- name: print message
-  debug:
-    msg: "{{ execute_node.stdout_lines }}"
+# - name: print message
+#   debug:
+#     msg: "{{ execute_node.stdout_lines }}"
   
 - name: "Configure pm2 to start as service"
   shell: |
