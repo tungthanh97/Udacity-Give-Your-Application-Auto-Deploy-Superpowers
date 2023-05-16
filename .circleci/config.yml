@@ -74,7 +74,7 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS=$(curl --insecure  https://kvdb.io/VMXT5Pf9QKPRM7H1yLhric/migration_<< parameters.Workflow_ID >>)
+            SUCCESS=$(curl --insecure  https://kvdb.io/${KVDB_BUCKET}/migration_<< parameters.Workflow_ID >>)
             # Logic for reverting the database state
             if [[ "${SUCCESS}" == "1" ]]
             then
@@ -296,20 +296,11 @@ jobs:
             cat migrations_dump.txt
             echo '-----------------'
       - run:
-          name: Send migration results to memstash
+          name: Send migration status to kvdb.io
           command: |
-            cd backend
-            pwd
-            sudo cat ~/project/backend/migrations_dump.txt #/root/project/circleci/project/backend/migrations_dump.txt
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              curl -H "Content-Type: text/plain" -H "token: ce-${CIRCLE_WORKFLOW_ID}" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
-              echo migration_${CIRCLE_WORKFLOW_ID}
-              echo "SUCCESS = 1"
-            else
-              echo $(curl -H "Content-Type: text/plain" -H "token: ce-${CIRCLE_WORKFLOW_ID}" --request PUT --data "0" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID} | grep "No migrations")
-              echo "migration ID" migration_${CIRCLE_WORKFLOW_ID}
-              echo "FAIL = 0"
+              curl https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       - destroy-environment:
             workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
