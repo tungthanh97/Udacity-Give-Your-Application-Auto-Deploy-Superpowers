@@ -3,6 +3,7 @@
   file:
     path: ~/backend-app
     state: directory
+    mode: 0755
 
 - name: "Install dependencies"
   become: true
@@ -24,18 +25,24 @@
     src: artifact.tar.gz
     dest: ~/backend-app
 
-- name: "Installing Node Dependencies"
-  shell: |
-    cd ~/backend-app
-    npm i
+# - name: "Installing Node Dependencies"
+#   shell: |
+#     cd ~/backend-app
+#     npm i
 
-- name: "Executing Node app with PM2"
+- name: "executing node"
   shell: |
-    cd ~/backend-app/dist
+    cd /home/ubuntu/backend
     pm2 stop default
-    pm2 start main.js
+    sudo pm2 start npm --name udapeople -- start
 
-  register: execute_node
+# - name: "Executing Node app with PM2"
+#   shell: |
+#     cd ~/backend-app/dist
+#     pm2 stop default
+#     pm2 start main.js
+
+#   register: execute_node
 
 - name: print message
   debug:
