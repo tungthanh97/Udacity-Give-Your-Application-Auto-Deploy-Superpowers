@@ -4,6 +4,12 @@
     path: ~/backend-app
     state: directory
 
+- name: "install dependencies."
+  become: true
+  apt:
+    name: ["nodejs", "npm"]
+    update_cache: yes
+
 - name: "Unarchive backend files"
   unarchive:
     src: artifact.tar.gz
