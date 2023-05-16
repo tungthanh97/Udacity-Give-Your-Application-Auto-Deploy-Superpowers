@@ -264,6 +264,10 @@ jobs:
               ansible-playbook -i inventory.txt configure-server.yml
               pwd
               cat ~/project/backend/.env
+        - persist_to_workspace:
+            root: ~/
+            paths:
+              - project/backend
         - destroy-environment
   run-migrations:
     docker:
@@ -354,6 +358,7 @@ jobs:
             cd backend
             npm install
             npm run build
+            echo $(ls)
             tar -czf artifact.tar.gz dist/* package*
             cd ..
             cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
