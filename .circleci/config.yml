@@ -353,16 +353,21 @@ jobs:
       - attach_workspace:
           at: ~/
       - restore_cache:
-          keys: [backend-build]
+          keys: [backend-build] drop this view into the Secondary Side Bar.
+
+2f41e98
+tung
+tung
+committed 7 hours ago
       - run:
           name: Package Backend
           command: |
             cd backend
             npm install
             npm run build
+            tar -czf artifact.tar.gz dist/* package*
             cd ..
-            tar -C backend -czvf artifact.tar.gz 
-            cp artifact.tar.gz .circleci/ansible/roles/deploy/files
+            cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files
       - run:
           name: Deploy backend
           command: |
