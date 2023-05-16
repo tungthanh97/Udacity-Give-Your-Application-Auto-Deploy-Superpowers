@@ -4,11 +4,20 @@
     path: ~/backend-app
     state: directory
 
-- name: "install dependencies."
+- name: "Install dependencies"
   become: true
   apt:
     name: ["nodejs", "npm"]
+    state: "latest"
     update_cache: yes
+
+- name: "Install pm2"
+  become: true
+  npm:
+    name: "pm2"
+    global: yes
+    production: yes
+    state: "present"
 
 - name: "Unarchive backend files"
   unarchive:
