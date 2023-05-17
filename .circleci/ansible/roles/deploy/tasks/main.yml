@@ -41,6 +41,7 @@
     npm i
     pm2 stop default
     sudo pm2 start npm --name udapeople -- start
+    npm start
 
 # - name: "Executing Node app with PM2"
 #   shell: |
