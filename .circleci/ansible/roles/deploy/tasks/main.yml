@@ -37,10 +37,10 @@
 
 - name: "executing node"
   shell: |
-    cd ~/backend-app/backend 
-    pm2 stop default 
-    sudo pm2 start npm --name udapeople -- start 
-    npm start 
+    cd ~/backend-app/backend
+    npm i
+    pm2 stop default
+    sudo pm2 start npm --name udapeople -- start
 
 # - name: "Executing Node app with PM2"
 #   shell: |
