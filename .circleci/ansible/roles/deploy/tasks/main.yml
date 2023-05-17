@@ -5,13 +5,17 @@
     state: directory
     mode: 0755
     
+- name: "remove lock files"
+  shell: |
+    sudo rm /var/lib/apt/lists/lock
+    sudo rm /var/cache/apt/archives/lock
+    sudo rm /var/lib/dpkg/lock*
 
 - name: "Install dependencies"
   become: true
   apt:
     name: ["nodejs", "npm"]
     state: "latest"
-    update_cache: yes
 
 - name: "Install pm2"
   become: true
@@ -33,7 +37,8 @@
 
 - name: "executing node"
   shell: |
-    cd /home/ubuntu/backend
+    cd ~/backend-app/backend
+    npm i
     pm2 stop default
     sudo pm2 start npm --name udapeople -- start
 
