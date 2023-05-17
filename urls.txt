@@ -1,0 +1,16 @@
+Public Url to GitHub repository (not private) [URL01]
+   https://github.com/tungthanh97/Udacity-Give-Your-Application-Auto-Deploy-Superpowers
+
+Public URL for your S3 Bucket (aka, your green candidate front-end) [URL02]
+   http://udapeople-f1ad504.s3-website-us-east-1.amazonaws.com/#/employees
+
+Public URL for your CloudFront distribution (aka, your blue production front-end) [URL03]
+   http://dhv05y9w83xwb.cloudfront.net/#/employees
+
+Public URLs to deployed application back-end in EC2 [URL04]
+   http://54.234.120.220:3030/api/status
+   or
+   http://ec2-54-234-120-220.compute-1.amazonaws.com:3030/api/status
+
+Public URL to your Prometheus Server [URL05]
+  http://ec2-52-205-253-57.compute-1.amazonaws.com:9090/
