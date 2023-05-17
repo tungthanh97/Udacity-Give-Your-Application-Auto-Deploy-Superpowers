@@ -326,6 +326,7 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
 
+            echo "${CIRCLE_WORKFLOW_ID}"
             echo "API_URL=http://${BACKEND_PUBLIC_IP}:3030" >> frontend/.env
             cat frontend/.env
       - run:
@@ -394,6 +395,7 @@ jobs:
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --output text)
 
+            echo "${CIRCLE_WORKFLOW_ID}"
             export API_URL=http://${BACKEND_PUBLIC_IP}:3030
             echo "${API_URL}"
             if curl -s --fail $API_URL/api/status | grep "ok"
