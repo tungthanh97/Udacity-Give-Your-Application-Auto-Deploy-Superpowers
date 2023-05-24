@@ -34,6 +34,7 @@ module.exports = {
     alias: {
       app: path.resolve(__dirname, 'src/app/'),
       assets: path.resolve(__dirname, 'src/assets/'),
+      'react-dom': '@hot-loader/react-dom',
     },
   },
   module: {
